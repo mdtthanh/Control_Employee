@@ -23,5 +23,15 @@ namespace web_api.Controllers
             var employees = await _context.Employee.ToListAsync();
             return Ok(employees);
         }
+
+        // api get all info of employee end workplace
+
+        [HttpGet("AllInfo")]
+        public async Task<ActionResult<List<Employee>>> GetAllInfo()
+        {
+            var employees = await _context.Employee.Include(x => x.WorkPlace).ToListAsync();
+            return Ok(employees);
+        }
+
     }
 }

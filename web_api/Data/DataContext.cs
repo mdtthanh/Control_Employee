@@ -9,5 +9,7 @@ namespace web_api.Data
             
         }
         public DbSet<Entities.Employee> Employee { get; set; }
+        public DbSet<Entities.WorkPlace> WorkPlace{ get; set; }
+
     }
 }

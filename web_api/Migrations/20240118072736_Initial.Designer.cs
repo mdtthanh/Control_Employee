@@ -12,7 +12,7 @@ using web_api.Data;
 namespace web_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240117040705_Initial")]
+    [Migration("20240118072736_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -45,12 +45,42 @@ namespace web_api.Migrations
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("WorkPlaceId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("WorkTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("WorkPlaceId");
+
                     b.ToTable("Employee");
+                });
+
+            modelBuilder.Entity("web_api.Entities.WorkPlace", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("WorkPlaceName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WorkPlace");
+                });
+
+            modelBuilder.Entity("web_api.Entities.Employee", b =>
+                {
+                    b.HasOne("web_api.Entities.WorkPlace", "WorkPlace")
+                        .WithMany()
+                        .HasForeignKey("WorkPlaceId");
+
+                    b.Navigation("WorkPlace");
                 });
 #pragma warning restore 612, 618
         }
