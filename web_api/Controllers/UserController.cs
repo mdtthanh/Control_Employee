@@ -18,7 +18,7 @@ namespace web_api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Employee>>> GetAllUsers(DateTime? v)
+        public async Task<ActionResult<List<Employee>>> GetAllUsers()
         {
             var employees = await _context.Employee.ToListAsync();
             return Ok(employees);
@@ -38,6 +38,19 @@ namespace web_api.Controllers
         {
             _context.Employee.Add(employee);
             await _context.SaveChangesAsync();
+            return Ok(employee);
+        }
+
+        [HttpGet("AllInfo/{id}")]
+        public async Task<ActionResult<Employee>> GetEmployeeById(int id)
+        {
+            var employee = await _context.Employee.Include(x => x.WorkPlace).FirstOrDefaultAsync(e => e.Id == id);
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
             return Ok(employee);
         }
 
@@ -72,6 +85,14 @@ namespace web_api.Controllers
             _context.Employee.Remove(employeeDelete);
             await _context.SaveChangesAsync();
             return Ok(employeeDelete);
+        }
+
+        // api get all info of workplace
+        [HttpGet("AllInfoWorkPlace")]
+        public async Task<ActionResult<List<WorkPlace>>> GetAllInfoWorkPlace()
+        {
+            var workPlaces = await _context.WorkPlace.ToListAsync();
+            return Ok(workPlaces);
         }
     }
 }
