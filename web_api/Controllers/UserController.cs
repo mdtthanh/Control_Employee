@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 using web_api.Data;
 using web_api.Entities;
 
@@ -53,6 +55,37 @@ namespace web_api.Controllers
 
             return Ok(employee);
         }
+
+        // GET employee date now
+        [HttpGet("DateNow/{day?}/{month?}/{year?}")]
+        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployeesByDate(int? day, int? month, int? year)
+        {
+            DateTime date;
+
+            if (day.HasValue && month.HasValue && year.HasValue)
+            {
+                date = new DateTime(year.Value, month.Value, day.Value);
+            }
+            else
+            {
+                date = DateTime.Now;
+            }
+
+            string formattedDate = date.ToString("yyyy-MM-dd");
+
+            var employees = await _context.Employee
+                .Where(e => e.WorkTime.Contains(formattedDate))
+                .Include(x => x.WorkPlace)
+                .ToListAsync();
+
+            if (employees == null)
+            {
+                return NotFound();
+            }
+
+            return employees;
+        }
+
 
         // api edit info of employee 
         [HttpPut("EditInfo/{id}")]
