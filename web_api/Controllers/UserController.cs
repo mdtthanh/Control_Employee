@@ -37,7 +37,8 @@ namespace web_api.Controllers
         //api add new all info off employee end workplace
         [HttpPost("AddAllInfo")]
         public async Task<ActionResult<Employee>> AddAllInfo(Employee employee)
-        {
+        {  // unset employee id
+            employee.Id = 0;
             _context.Employee.Add(employee);
             await _context.SaveChangesAsync();
             return Ok(employee);
